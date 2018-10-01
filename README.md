@@ -125,3 +125,56 @@ Make sure to call `msaio_connect(handlers)` function before calling any of these
 </div>
 
 All the documentation is provided on the site https://msadafruitio.000webhostapp.com/documentation.html
+
+<div class="col-md-12">
+
+#### Samples
+
+This example will get you started.
+
+>Make sure you include all the required library before including `app.js`
+>Make sure you include JQuery, Paho MQTT and msAdafruitIO_v2 then include app.js.
+
+Create `app.js` in your script folder.
+
+
+```javascript
+(function(){
+    //Creating new msAdafruitIO object
+    var afio = new msAdafruitIO("AIO_username","AIO_key");
+    //Calling msaio_connect before calling calling any other function
+    afio.msaio_connect({onConnect:onConnect,onMessageArrived:onMessageArrived});
+    //Getting user info to check if api is working or not OPTIONAL Step
+    afio.get_user_info(function(data)
+    {
+        if(data == null)
+        {
+            alert("Authorization Failed");
+        }
+    });
+
+    // called when the client connects
+    function onConnect() {
+        // Once a connection has been made, make a subscription and send a message.
+        alert("Connected");
+    }
+
+    // called when the client loses its connection
+    function onConnectionLost(responseObject) 
+    {
+        if (responseObject.errorCode !== 0) 
+        {
+            console.log("onConnectionLost:"+responseObject.errorMessage);
+        }
+    }
+
+    // called when a message arrives
+    function onMessageArrived(message) 
+    {
+        var feed = message.destinationName.split("/")[2];
+        var value = message.payloadString;
+        alert("feed:"+feed+ "& value:"+value);
+
+    }
+})();
+```
